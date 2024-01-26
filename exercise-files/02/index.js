@@ -3,6 +3,7 @@ const OpenAI = require('openai');
 const readlineSync = require('readline-sync');
 
 // Open AI configuration
+const openai = new OpenAI();
 
 // Get user input
 function getInput(promptMessage) {
@@ -16,6 +17,7 @@ async function main() {
   console.log('          CHAT WITH AI 🤖   ');
   console.log('----------------------------------\n');
   console.log("type 'x' to exit the conversation");
+  console.log(process.env.OPENAI_API_KEY);
   runConversation();
 }
 
@@ -26,7 +28,7 @@ async function runConversation() {
       console.log("Goodbye!");
       process.exit();
     }
-    console.log("You said: " + input );
+
   }
 }
 
