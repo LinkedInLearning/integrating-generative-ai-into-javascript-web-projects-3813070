@@ -1,9 +1,8 @@
 ## OpenAI - Quickstart
 
-- **express**: framework Node.js is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
-- **nodemon**: utility that will monitor for any changes in your source and automatically restart your server.
 - **dotenv**: zero-dependency module that loads environment variables from a .env file into process.env.
-- **readline-sync**:
+- **nodemon**: utility that will monitor for any changes in your source and automatically restart your server.
+- **readline-sync**:for interactively running to have a conversation with the user via a console
 - **openai**: OpenAI API library for Node.js projects. This library provides convenient access to the OpenAI API from applications written in server-side JavaScript.
 
 ## Installation :

@@ -14,11 +14,5 @@
   "license": "ISC",
   "devDependencies": {
     "prettier": "^3.2.4"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.1",
-    "nodemon": "^3.0.3",
-    "openai": "^4.26.0",
-    "readline-sync": "^1.4.10"
   }
 }
