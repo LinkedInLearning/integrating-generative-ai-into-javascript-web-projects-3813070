@@ -24,20 +24,52 @@ async function main() {
 }
 
 async function runConversation() {
-    while (true) {
+  // Step 1: send the conversation and available functions to the model
+  const messages = [
+    { role: "user", content: "What's the weather like in San Francisco, Tokyo, and Paris?" },
+  ];
+  const tools = [
+    {
+      type: "function",
+      function: {
+        name: "get_current_weather",
+        description: "Get the current weather in a given location",
+        parameters: {
+          type: "object",
+          properties: {
+            location: {
+              type: "string",
+              description: "The city and state, e.g. San Francisco, CA",
+            },
+            unit: { type: "string", enum: ["celsius", "fahrenheit"] },
+          },
+          required: ["location"],
+        },
+      },
+    },
+  ];
+
+  while (true) {
     const input = getInput("You: ");
     if (input === "x") {
       console.log("Goodbye!");
       process.exit();
     }
     messages.push({ role: "user", content: input });
-    const completion = await openai.chat.completions.create({
+    
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-1106",
       messages: messages,
-      model: MODEL_ENGINE,
+      tools: tools,
+      tool_choice: "auto", // auto is default, but we'll be explicit
     });
-    messages.push(completion.choices[0].message);
-    console.log(completion.choices[0].message.content);
+    const responseMessage = response.choices[0].message;
+
+  // Step 2: check if the model wanted to call a function
+  const toolCalls = responseMessage.tool_calls;
+  console.log(toolCalls.length > 0) 
   }
+ 
 }
 
 main(); 
