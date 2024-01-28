@@ -15,6 +15,19 @@ function getInput(promptMessage) {
   });
 }
 
+function getCurrentWeather(location, unit = "fahrenheit") {
+  if (location.toLowerCase().includes("tokyo")) {
+    return JSON.stringify({ location: "Tokyo", temperature: "10", unit: "celsius" });
+  } else if (location.toLowerCase().includes("san francisco")) {
+    return JSON.stringify({ location: "San Francisco", temperature: "72", unit: "fahrenheit" });
+  } else if (location.toLowerCase().includes("paris")) {
+    return JSON.stringify({ location: "Paris", temperature: "22", unit: "fahrenheit" });
+  } else {
+    return JSON.stringify({ location, temperature: "unknown" });
+  }
+}
+
+
 async function main() {
   console.log("\n\n----------------------------------");
   console.log("          CHAT WITH AI 🤖   ");
@@ -25,9 +38,7 @@ async function main() {
 
 async function runConversation() {
   // Step 1: send the conversation and available functions to the model
-  const messages = [
-    { role: "user", content: "What's the weather like in San Francisco, Tokyo, and Paris?" },
-  ];
+
   const tools = [
     {
       type: "function",
@@ -67,9 +78,36 @@ async function runConversation() {
 
   // Step 2: check if the model wanted to call a function
   const toolCalls = responseMessage.tool_calls;
-  console.log(toolCalls.length > 0) 
+  if (responseMessage.tool_calls) {
+    // Step 3: call the function
+    // Note: the JSON response may not always be valid; be sure to handle errors
+    const availableFunctions = {
+      get_current_weather: getCurrentWeather,
+    }; // only one function in this example, but you can have multiple
+    messages.push(responseMessage); // extend conversation with assistant's reply
+    for (const toolCall of toolCalls) {
+      const functionName = toolCall.function.name;
+      const functionToCall = availableFunctions[functionName];
+      const functionArgs = JSON.parse(toolCall.function.arguments);
+      const functionResponse = functionToCall(
+        functionArgs.location,
+        functionArgs.unit
+      );
+      console.log(functionResponse)
+      // messages.push({
+      //   tool_call_id: toolCall.id,
+      //   role: "tool",
+      //   name: functionName,
+      //   content: functionResponse,
+      // }); // extend conversation with function response
+    }
+    // const secondResponse = await openai.chat.completions.create({
+    //   model: "gpt-3.5-turbo-1106",
+    //   messages: messages,
+    // }); // get a new response from the model where it can see the function response
+    // return secondResponse.choices;
+    }
   }
- 
 }
 
 main(); 
