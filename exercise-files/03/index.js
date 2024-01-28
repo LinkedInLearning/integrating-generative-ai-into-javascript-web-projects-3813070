@@ -137,7 +137,6 @@ const start = async () => {
       process.exit();
     }
     messages.push({"role": "user", "content": input})
-    console.log("works")
     const response = await runConversation(messages)
     console.log("Bot: ", response.choices[0].message.content)  
   }
