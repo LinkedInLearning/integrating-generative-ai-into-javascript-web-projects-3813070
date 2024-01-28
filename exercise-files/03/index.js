@@ -117,7 +117,7 @@ async function runConversation(messages) {
         name: functionName,
         content: functionResponse,
       });
-      // Step 6: generates a an extended response
+      // Step 6: generates an extended response
       try {
         const secondResponse = await openai.chat.completions.create({
           model: "gpt-3.5-turbo-1106",
