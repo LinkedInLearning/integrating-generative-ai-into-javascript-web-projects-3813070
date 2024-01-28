@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import readlineSync from "readline-sync";
 dotenv.config();
 
+let messages = [{ role: "system", content: "You are a professional assistant?" }];
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -55,7 +56,6 @@ async function getCurrentWeather(location, unit = "fahrenheit") {
 }
 
 async function runConversation(messages) {
-
   const tools = [
     {
       type: "function",
@@ -77,13 +77,6 @@ async function runConversation(messages) {
     },
   ];
 
-  while (true) {
-    const input = getInput("You: ");
-    if (input === "x") {
-      console.log("Goodbye!");
-      process.exit();
-    }
-  messages.push({"role": "user", "content": input})
     
   const response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo-1106",
@@ -111,7 +104,6 @@ async function runConversation(messages) {
       functionArgs.location,
       functionArgs.unit
     );
-    console.log(functionResponse)
     // Step 4: send the info on the function call and function response to GPT
     // extend conversation with function response
     // messages.push({
@@ -130,44 +122,26 @@ async function runConversation(messages) {
       console.error(e);
     }
   }
-  }
 }
 
-() => {
-  geoCode("Boston");
-};
-
-const printMessage = (response) => {
-  console.log(`\nBot: ${response.choices[0].message.content}\x1b`);
-  main();
-};
-
-const start = () => {
+const start = async () => {
   console.log("\n\n----------------------------------");
   console.log("          CHAT WITH AI 🤖   ");
   console.log("----------------------------------\n");
   console.log("\nBot: How can I help you?");
-  main();
+
+  while (true) {
+    const input = getInput("You: ");
+    if (input === "x") {
+      console.log("Goodbye!");
+      process.exit();
+    }
+    messages.push({"role": "user", "content": input})
+    console.log("works")
+    const response = await runConversation(messages)
+    console.log("Bot: ", response.choices[0].message.content)  
+  }
 };
 
-async function main() {
-  const messages = [
-    {
-      role: "system",
-      content:
-        "You are a helpful assistant capable of telling the current weather",
-    },
-  ];
-  const input = getInput("You: ");
+start()
 
-  try {
-    if (!!input) {
-      messages.push({ role: "user", content: input });
-      runConversation(messages).then(printMessage).catch(console.error);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-start();
