@@ -15,17 +15,49 @@ function getInput(promptMessage) {
   });
 }
 
-function getCurrentWeather(location, unit = "fahrenheit") {
-  if (location.toLowerCase().includes("tokyo")) {
-    return JSON.stringify({ location: "Tokyo", temperature: "10", unit: "celsius" });
-  } else if (location.toLowerCase().includes("san francisco")) {
-    return JSON.stringify({ location: "San Francisco", temperature: "72", unit: "fahrenheit" });
-  } else if (location.toLowerCase().includes("paris")) {
-    return JSON.stringify({ location: "Paris", temperature: "22", unit: "fahrenheit" });
-  } else {
-    return JSON.stringify({ location, temperature: "unknown" });
-  }
+
+function kelvinToCelsius(kelvin) {
+  return JSON.stringify(Math.round(kelvin - 273.15));
 }
+
+function geoCode(location) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const coordinates = await fetch(
+        `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${process.env.WEATHER_API_KEY}`
+      );
+      const json = await coordinates.json();
+      const lat = json[0]?.lat;
+      const lon = json[0]?.lon;
+      resolve({ lat, lon });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+}
+
+// Example dummy function hard coded to return the same weather
+// In production, this could be your backend API or an external API
+async function getCurrentWeather(location, unit = "fahrenheit") {
+  const loc = location.split(",")[0];
+  const { lat, lon } = await geoCode(loc);
+  const response = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.WEATHER_API_KEY}`
+  );
+
+  console.log(response)
+  //parse the response and return the weather info as a JSON object
+
+  // ...
+  const weatherInfo = {
+    location: "Paris",
+    temperature: "22",
+    unit: "celsius",
+    forecast: "sunny",
+  };
+  return JSON.stringify(weatherInfo);
+}
+
 
 
 async function main() {
@@ -94,18 +126,9 @@ async function runConversation() {
         functionArgs.unit
       );
       console.log(functionResponse)
-      // messages.push({
-      //   tool_call_id: toolCall.id,
-      //   role: "tool",
-      //   name: functionName,
-      //   content: functionResponse,
-      // }); // extend conversation with function response
+      // Step 4: append the JSON object to the conversation
     }
-    // const secondResponse = await openai.chat.completions.create({
-    //   model: "gpt-3.5-turbo-1106",
-    //   messages: messages,
-    // }); // get a new response from the model where it can see the function response
-    // return secondResponse.choices;
+     // Step 5: extend the conversation with the function's response
     }
   }
 }
