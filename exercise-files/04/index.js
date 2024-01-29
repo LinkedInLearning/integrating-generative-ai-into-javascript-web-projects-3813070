@@ -14,9 +14,19 @@ const ASSISTANT_DEFAULT_INSTRUCTIONS =
 // Upload File to OpenAI
 
 // Step 1: Create an Assistant
+const createAssistant = async () => { 
+  const assistant = await openai.beta.assistants.create({
+    name: ASSISTANT_NAME,
+    description: ASSISTANT_DEFAULT_INSTRUCTIONS,
+    model: LANGUAGE_MODEL,
+    tools: [{"type": "retrieval"}],
+    file_ids: [file.id]
+  });
+  return assistant
+}
 
 
-// Step 2: Create a Thread
+// Step 2: Create a Thre
 
 
 // Step 3: Add a Message to a Thread
@@ -46,7 +56,7 @@ async function main() {
   // Step 0: Create a File
  
   // Step 1: Create an Assistant
-
+  const assistant = await createAssistant()
   // Step 2: Create a Thread
 
 
@@ -59,6 +69,7 @@ async function main() {
     }
 
     console.log("userMessage: ", userMessage)
+
 
     // Step 4: Run the Assistant
 
