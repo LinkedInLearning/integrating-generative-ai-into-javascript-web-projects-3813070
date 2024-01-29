@@ -26,7 +26,7 @@ const createAssistant = async () => {
 }
 
 
-// Step 2: Create a Thre
+// Step 2: Create a Thread
 
 
 // Step 3: Add a Message to a Thread
