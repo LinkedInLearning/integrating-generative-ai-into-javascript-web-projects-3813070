@@ -13,20 +13,29 @@ const ASSISTANT_DEFAULT_INSTRUCTIONS =
 
 // Upload File to OpenAI
 
+const uploadFile = async (filepath) =>{
+  const file = await openai.files.create({
+    file: fs.createReadStream(filepath),
+    purpose: "assistants",
+  });
+  console.log(file)
+  console.log("file.id: ", file.id)
+  return file
+}
+
 // Step 1: Create an Assistant
-const createAssistant = async () => { 
-  const assistant = await openai.beta.assistants.create({
+const createAssistant = async (file_id) => { 
+  return await openai.beta.assistants.create({
     name: ASSISTANT_NAME,
     description: ASSISTANT_DEFAULT_INSTRUCTIONS,
     model: LANGUAGE_MODEL,
     tools: [{"type": "retrieval"}],
-    file_ids: [file.id]
+    file_ids: [file_id]
   });
-  return assistant
 }
 
 
-// Step 2: Create a Thre
+// Step 2: Create a Thread
 
 
 // Step 3: Add a Message to a Thread
@@ -54,9 +63,10 @@ async function main() {
   console.log("to exit Chat type 'X'");
 
   // Step 0: Create a File
+  const file = await uploadFile("files/faq_abc.txt")
  
   // Step 1: Create an Assistant
-  const assistant = await createAssistant()
+  const assistant = await createAssistant(file.id)
   // Step 2: Create a Thread
 
 
