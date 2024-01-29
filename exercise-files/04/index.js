@@ -18,8 +18,8 @@ const uploadFile = async (filepath) =>{
     file: fs.createReadStream(filepath),
     purpose: "assistants",
   });
-  console.log(file)
-  console.log("file.id: ", file.id)
+  // console.log(file)
+  // console.log("file.id: ", file.id)
   return file
 }
 
@@ -44,15 +44,24 @@ const createThread = async () => {
 // Step 3: Add a Message to a Thread
 const addMessageToThread = async (thread_id, user_input) => {
 
-  const threadMessages = await openai.beta.threads.messages.create(
+  const threadMessage = await openai.beta.threads.messages.create(
     thread_id,
     { role: "user", content: user_input }
   );
-  console.log(threadMessages);
+  console.log(threadMessage.content[0].text.value);
  }
 
 
 // Step 4: Run the Assistant
+
+const runThread = async (thread_id, assistant_id) => { 
+  const run = await openai.beta.threads.runs.create(
+  thread_id,
+  { assistant_id: assistant_id }
+  );
+  console.log("this is the run object: ", run)
+  return run
+}
 
 
 // Step 5: Check the Run Status
@@ -96,6 +105,8 @@ async function main() {
 
 
     // Step 4: Run the Assistant
+    let run = await runThread(thread.id, assistant.id)
+
 
     // Step 5: Check the Run Status
 
