@@ -23,52 +23,73 @@ const uploadFile = async (filepath) =>{
   return file
 }
 
+
 // Step 1: Create an Assistant
-const createAssistant = async (file_id) => { 
+const createAssistant = async (file_id) => {
   return await openai.beta.assistants.create({
     name: ASSISTANT_NAME,
-    description: ASSISTANT_DEFAULT_INSTRUCTIONS,
+    instructions: ASSISTANT_DEFAULT_INSTRUCTIONS,
+    tools: [{ type: "retrieval" }],
     model: LANGUAGE_MODEL,
-    tools: [{"type": "retrieval"}],
-    file_ids: [file_id]
+    file_ids: [file_id],
   });
-}
-
+};
 
 // Step 2: Create a Thread
-const createThread = async () => { 
-  return await openai.beta.threads.create()
-}
-
+const createThread = async () => {
+  return await openai.beta.threads.create();
+};
 
 // Step 3: Add a Message to a Thread
-const addMessageToThread = async (thread_id, user_input) => {
-
+const addMessageToThread = async (thread, user_input) => {
   const threadMessage = await openai.beta.threads.messages.create(
-    thread_id,
+    thread.id,
     { role: "user", content: user_input }
   );
   console.log(threadMessage.content[0].text.value);
- }
-
+};
 
 // Step 4: Run the Assistant
-
 const runThread = async (thread_id, assistant_id) => { 
-  const run = await openai.beta.threads.runs.create(
+  try {
+    const run = await openai.beta.threads.runs.create(
   thread_id,
   { assistant_id: assistant_id }
   );
   console.log("this is the run object: ", run)
   return run
+  } catch (error) {
+    console.error(error);
+  } 
 }
 
-
 // Step 5: Check the Run Status
-
+const checkRunStatus = async (thread, run) => {
+  console.log(run, thread)
+  try {
+    console.log("This is the run status: ", run.status, "\n");
+    return await openai.beta.threads.runs.retrieve(
+      thread.id,
+      run.id
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // Step 6: Retrieve and display the Messages
+const retrieveMessages = async (run, thread) => {
+  if (run.status === "completed") {
+    console.log("This is the run status: ", run.status, "\n");
+    const messages = await openai.beta.threads.messages.list(thread.id);
 
+    // display messages
+    console.log(messages.data[0].content[0]);
+    if (messages.data[0].content[0].text) {
+      console.log("assistant 🤖: ", messages.data[0].content[0].text.value);
+    }
+  }
+};
 
 function getInput(promptMessage) {
   return readlineSync.question(promptMessage, {
@@ -82,14 +103,13 @@ async function main() {
   console.log("---------------------------------- \n ");
   console.log("to exit Chat type 'X'");
 
-  // Step 0: Create a File
+  // Upload File to OpenAI
   const file = await uploadFile("files/faq_abc.txt")
- 
-  // Step 1: Create an Assistant
-  const assistant = await createAssistant(file.id)
-  // Step 2: Create a Thread
-  const thread = await createThread()
 
+  // Step 1: Create an Assistant
+  const assistant = await createAssistant(file.id);
+  // Step 2: Create a Thread
+  const thread = await createThread();
 
   while (true) {
     // Step 3: Add a Message to a Thread
@@ -98,20 +118,26 @@ async function main() {
       console.log("Goodbye!");
       process.exit();
     }
-
     if (!!userMessage) {
-      await addMessageToThread(thread.id, userMessage)
-    }
-
+      await addMessageToThread(thread, userMessage);
 
     // Step 4: Run the Assistant
     let run = await runThread(thread.id, assistant.id)
-
-
     // Step 5: Check the Run Status
+    while (run.status !== "completed") {
+      await checkRunStatus(thread, run);
+      run = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+
+      if (run.status === "failed" || run.status ===  "expired") {
+        console.log("Chat terminated.");
+        // break
+        process.exit();
+      }
+    }
 
     // Step 6: Retrieve and display the Messages
-
+    await retrieveMessages(run, thread, assistant);
+    }
   }
 }
 
