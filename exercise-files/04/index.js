@@ -36,9 +36,20 @@ const createAssistant = async (file_id) => {
 
 
 // Step 2: Create a Thread
+const createThread = async () => { 
+  return await openai.beta.threads.create()
+}
 
 
 // Step 3: Add a Message to a Thread
+const addMessageToThread = async (thread_id, user_input) => {
+
+  const threadMessages = await openai.beta.threads.messages.create(
+    thread_id,
+    { role: "user", content: user_input }
+  );
+  console.log(threadMessages);
+ }
 
 
 // Step 4: Run the Assistant
@@ -68,6 +79,7 @@ async function main() {
   // Step 1: Create an Assistant
   const assistant = await createAssistant(file.id)
   // Step 2: Create a Thread
+  const thread = await createThread()
 
 
   while (true) {
@@ -78,7 +90,9 @@ async function main() {
       process.exit();
     }
 
-    console.log("userMessage: ", userMessage)
+    if (!!userMessage) {
+      await addMessageToThread(thread.id, userMessage)
+    }
 
 
     // Step 4: Run the Assistant
