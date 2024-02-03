@@ -30,7 +30,7 @@ const createAssistant = async (file_id) => {
     name: ASSISTANT_NAME,
     instructions: ASSISTANT_DEFAULT_INSTRUCTIONS,
     tools: [{ type: "retrieval" }],
-    model: LANGUAGE_MODEL,
+    model: LANGUAGE_MODEL_GPT4_PREVIEW,
     file_ids: [file_id],
   });
 };
@@ -55,14 +55,14 @@ const runThread = async (thread_id, assistant_id) => {
   thread_id,
   { assistant_id: assistant_id }
   );
-  console.log("this is the run object: ", run)
+  // console.log("this is the run object: ", run)
   return run
 }
 
 // Step 5: Check the Run Status
 const checkRunStatus = async (thread, run) => {
   try {
-    console.log("This is the run status: ", run.status, "\n");
+    // console.log("This is the run status: ", run.status, "\n");
     return await openai.beta.threads.runs.retrieve(
       thread.id,
       run.id
@@ -73,6 +73,13 @@ const checkRunStatus = async (thread, run) => {
 };
 
 // Step 6: Retrieve and display the Messages
+const retrieveMessages = async (run, thread) => {
+  if(run.status === "completed"){
+    const messages = await openai.beta.threads.messages.list(thread.id);
+    console.log("assistant: ", messages.data[0].content[0].text.value);
+  }
+};
+
 
 function getInput(promptMessage) {
   return readlineSync.question(promptMessage, {
@@ -121,6 +128,7 @@ async function main() {
 
       
     // Step 6: Retrieve and display the Messages
+    await retrieveMessages(run, thread);
 
     }
   }
