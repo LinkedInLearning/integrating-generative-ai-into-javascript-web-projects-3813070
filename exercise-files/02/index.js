@@ -32,7 +32,7 @@ async function runConversation() {
       console.log("Goodbye!");
       process.exit();
     }
-    messages.push({"role": "user", "content": "Tell me a joke about Parisian people."})
+    messages.push({"role": "user", "content": input})
     
     // generate completions
     const completion = await openai.chat.completions.create({
@@ -44,5 +44,4 @@ async function runConversation() {
     console.log("Usage: " + completion.usage.total_tokens + " tokens used");
   }
 }
-
 main(); 
