@@ -82,7 +82,7 @@ async function runConversation(messages) {
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo-1106",
+      model: "gpt-4-turbo-preview",
       messages: messages,
       tools: tools,
       tool_choice: "auto", // auto is default, but we'll be explicit
@@ -120,7 +120,7 @@ async function runConversation(messages) {
       // Step 6: generates an extended response
       try {
         const secondResponse = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo-1106",
+          model: "gpt-4-turbo-preview",
           messages: messages,
         });
         return secondResponse;
