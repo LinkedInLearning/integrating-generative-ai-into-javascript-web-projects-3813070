@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
+
 const data = [
   {
     sender: "user",
@@ -100,6 +101,11 @@ function App() {
   useEffect(() => {
     scrollToBottom(); // Call scrollToBottom whenever messages change
   }, [messages]);
+  useEffect(() => {
+    fetch("http://localhost:4000/")
+      .then((res) => res.json())
+      .then(setThread);
+  }, []);
 
   return (
     <body>
@@ -111,7 +117,7 @@ function App() {
                 🤖 AI Assistant
               </h1>
               <hr />
-              <small className="text-muted">THREAD: </small>
+              <small className="text-muted">THREAD: {thread.id} </small>
             </div>
           </div>
           <div className="messages">
