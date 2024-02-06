@@ -77,6 +77,23 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const sendMessage = (message) => {
+    fetch("http://localhost:4000/sendMessage", { 
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ input: message }),
+    })
+    .then(response => response.json())
+    .then(response => {
+      setMessages(prevMessages => [...prevMessages, response]);
+    })
+    .catch((error) => {
+        console.error("Error:", error); // Handle the error
+    });
+  }
+
   const handleOnChange = (e) => setUserMessage(e.target.value);
   const handleOnSubmit = (e) => {
     e.preventDefault();
@@ -89,6 +106,8 @@ function App() {
         timestamp: new Date(),
       },
     ]);
+    sendMessage(userMessage)
+    inputRef.current.value = "";
   };
 
   const handleKeyPress = (e) => {
@@ -117,7 +136,7 @@ function App() {
                 🤖 AI Assistant
               </h1>
               <hr />
-              <small className="text-muted">THREAD: {thread.id} </small>
+              <small className="text-muted">THREAD: {thread?.id} </small>
             </div>
           </div>
           <div className="messages">
