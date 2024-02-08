@@ -77,6 +77,20 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const moderateConversation = (message) => { 
+    return new Promise((resolve, reject) => { 
+      fetch("http://localhost:4000/moderate", { 
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ input: message }),
+      })
+      .then(response => response.json())
+      .then(resolve)
+    })
+  }
+
   const sendMessage = (message) => {
     fetch("http://localhost:4000/sendMessage", { 
       method: "POST",
@@ -98,16 +112,22 @@ function App() {
   const handleOnSubmit = (e) => {
     e.preventDefault();
     if (userMessage === "") return;
-    setMessages([
-      ...messages,
-      {
+    moderateConversation(userMessage).then(flagged => { 
+      if (flagged) { 
+        console.log("Message flagged", flagged);
+      } else { 
+        setMessages([
+          ...messages,
+        {
         sender: "user",
         content: userMessage,
         timestamp: new Date(),
-      },
-    ]);
-    sendMessage(userMessage)
-    inputRef.current.value = "";
+        },
+      ]);
+      sendMessage(userMessage)
+      inputRef.current.value = "";
+      }
+    })
   };
 
   const handleKeyPress = (e) => {

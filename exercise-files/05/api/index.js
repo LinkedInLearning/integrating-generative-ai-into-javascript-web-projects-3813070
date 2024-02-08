@@ -22,7 +22,9 @@ const ASSISTANT_DEFAULT_INSTRUCTIONS =
 
 async function moderateConversation(req, res) {
   const moderation = await openai.moderations.create({ input: req.body.input });
-  console.log(moderation);
+  console.log("categories", moderation.results[0].categories);  
+  console.log("category_scores", moderation.results[0].category_scores);  
+  res.status(200).send(moderation.results[0].flagged);
 }
 async function uploadToOpenAI(filepath) {
   try {
