@@ -197,10 +197,6 @@ function App() {
         </div>
       </div>
 
-      {/* <footer className="d-flex align-items-center justify-content-center position-relative bottom-0">
-        <div className="text-center">© 2020 Copyright Sajjad Hussain</div>
-      </footer> */}
-
       <script src="https://cdnjs.cloudflare.com/ajax/libs/material-ui/5.0.0-beta.5/index.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/material-ui/5.0.0-beta.5/index.js"></script>
