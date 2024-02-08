@@ -20,37 +20,10 @@ const ASSISTANT_NAME = "Math Tutor";
 const ASSISTANT_DEFAULT_INSTRUCTIONS =
   "You are a personal math tutor. Write and run code to answer math questions.";
 
-
-
-const moderateConversation = (req, res) => {
-  return fetch("https://api.openai.com/v1/moderations", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      // Replace `process.env.REACT_APP_OPENAI_API_KEY` with `process.env.OPENAI_API_KEY`
-      // or another environment variable as appropriate for your Node.js environment
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      input: req.body.input,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.results && data.results.length > 0) {
-        // return response
-      } else {
-        // Handle unexpected response structure
-        console.warn("Unexpected response format:", data);
-        return false;
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      return false; // Return false or handle the error appropriately
-    });
-};
-
+async function moderateConversation(req, res) {
+  const moderation = await openai.moderations.create({ input: req.body.input });
+  console.log(moderation);
+}
 async function uploadToOpenAI(filepath) {
   try {
     // Upload a file with an "assistants" purpose
@@ -178,7 +151,7 @@ async function sendMessage(req, res) {
 
 app.get("/", main);
 app.post("/sendMessage", sendMessage);
-// moderateConversation endpoint
+app.post("/moderate", moderateConversation);
 
 app.listen(port, () => {
   console.log(`server running on http://localhost:${port}`);
