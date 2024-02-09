@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import "./App.css";
 
 const data = [
@@ -92,6 +92,7 @@ function App() {
   }
 
   const sendMessage = (message) => {
+    setGenerating(true);
     fetch("http://localhost:4000/sendMessage", { 
       method: "POST",
       headers: {
@@ -102,6 +103,7 @@ function App() {
     .then(response => response.json())
     .then(response => {
       setMessages(prevMessages => [...prevMessages, response]);
+      setGenerating(false);
     })
     .catch((error) => {
         console.error("Error:", error); // Handle the error
@@ -146,6 +148,10 @@ function App() {
       .then(setThread);
   }, []);
 
+  const isDisabled = useMemo(() => { 
+    return !thread?.id
+  }, [thread])
+
   return (
     <body>
       <div className="container">
@@ -184,6 +190,7 @@ function App() {
                 ref={inputRef}
                 rows="1"
                 placeholder="Enter your message ..."
+                disabled={isDisabled}
                 onChange={handleOnChange}
                 onKeyDown={handleKeyPress}
               ></textarea>
