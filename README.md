@@ -1,6 +1,10 @@
 # Integrating Generative AI into JavaScript Web Projects
 This is the repository for the LinkedIn Learning course Integrating Generative AI into JavaScript Web Projects. The full course is available from [LinkedIn Learning][lil-course-url].
 
+![lil-thumbnail-url]
+
+<p>The emergence of AI has been the center of attraction on the web since the release of the first GPT language models by OpenAI in November 2022. As a result, there’s been a growing interest within the tech community to explore the potential of generative AI technologies in web development.</p><p>In this course, join instructor Sandy Ludosky as she provides an introduction to generative AI and its many possible applications using the JavaScript language and its frameworks. Explore the core concepts of generative AI with practical, hands-on examples. Sandy shows you how to build an AI-powered chatbot with Node.js and then extend the chatbot’s capabilities by allowing it to call external APIs with function calling. By the end of this course, you’ll also be ready to build an AI-powered virtual assistant with the OpenAI Assistants API.</p>
+
 _See the readme file in the main branch for updated instructions and information._
 ## Instructions
 This repository has branches for each of the videos in the course. You can use the branch pop up menu in github to switch to a specific branch and take a look at the course at that stage, or you can add `/tree/BRANCH_NAME` to the URL to go to the branch you want to access.
@@ -20,15 +24,18 @@ To resolve this issue:
     Add changes to git using this command: git add .
 	Commit changes using this command: git commit -m "some message"
 
-## Installing
-1. To use these exercise files, you must have the following installed:
-	- [list of requirements for course]
-2. Clone this repository into your local machine using the terminal (Mac), CMD (Windows), or a GUI tool like SourceTree.
-3. [Course-specific instructions]
+### Instructor
+
+Sandy Ludosky
+
+Web Developer and Trainer
+                
+
+Check out my other courses on [LinkedIn Learning](https://www.linkedin.com/learning/instructors/sandy-ludosky?u=104).
 
 
 [0]: # (Replace these placeholder URLs with actual course URLs)
 
-[lil-course-url]: https://www.linkedin.com/learning/
-[lil-thumbnail-url]: http://
+[lil-course-url]: https://www.linkedin.com/learning/integrating-generative-ai-into-javascript-web-projects
+[lil-thumbnail-url]: https://media.licdn.com/dms/image/D4D0DAQEI7IbUxzRbCQ/learning-public-crop_675_1200/0/1712684139215?e=2147483647&v=beta&t=f6VRYZpKnbWlo-biuCNQvYXJmQv0_lCgFr7Joiw_vzw
 
