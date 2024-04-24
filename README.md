@@ -37,5 +37,5 @@ Check out my other courses on [LinkedIn Learning](https://www.linkedin.com/learn
 [0]: # (Replace these placeholder URLs with actual course URLs)
 
 [lil-course-url]: https://www.linkedin.com/learning/integrating-generative-ai-into-javascript-web-projects
-[lil-thumbnail-url]: https://media.licdn.com/dms/image/D4D0DAQEI7IbUxzRbCQ/learning-public-crop_675_1200/0/1712684139215?e=2147483647&v=beta&t=f6VRYZpKnbWlo-biuCNQvYXJmQv0_lCgFr7Joiw_vzw
+[lil-thumbnail-url]: https://media.licdn.com/dms/image/D4E0DAQEc-uT6Iq7H0A/learning-public-crop_675_1200/0/1713900257957?e=2147483647&v=beta&t=9bpPWqzXm6MoQ9a95FChh9nCCZShKvOIL1fyIDAFEhU
 
